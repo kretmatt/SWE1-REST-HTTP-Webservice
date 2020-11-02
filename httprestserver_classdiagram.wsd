@@ -1,0 +1,98 @@
+class BaseHTTPServer{
+    + const string VERSION
+    + const string NAME
+    - int port
+    - bool running
+    - TcpListener listener
+    - List<IResourceEndpointHandler> resourceEndpointHandlers
+
+    + BaseHTTPServer(int port)
+    + void Start()
+    - void Run()
+    - void HandleClient(TcpClient client)
+}
+
+class RequestContext{
+    + String Type {get;set;}
+    + String URL {get;set;}
+    + String HTTPVersion {get;set;}
+    + List<HttpHeaderPair> HeaderPairs {get;private set;}
+    + String Body {get;set;}
+
+    + void AddHeader(String headerLine)
+    + static RequestContext GetBaseRequest(String request)
+    + override string ToString()
+    - RequestContext(String type, String url, String httpVersion)
+}
+
+class HttpHeaderPair{
+    + String HeaderKey {get;set;}
+    + String HeaderValue {get;set;}
+
+    + HttpHeaderPair(String headerKey, String headerValue)
+    + override string ToString()
+}
+
+interface IResourceEndpointHandler{
+    + bool CheckResponsibility(RequestContext requestContext)
+    + void HandleRequest(RequestContext requestContext)
+}
+
+interface ICRUDHandler{
+    + void ListHandler(RequestContext requestContext)
+    + void CreateHandler(RequestContext requestContext)
+    + void ReadHandler(RequestContext requestContext)
+    + void UpdateHandler(RequestContext requestContext)
+    + void DeleteHandler(RequestContext requestContext)
+}
+
+class MessageResourceEndpointHandler implements IResourceEndpointHandler, ICRUDHandler{
+    - List<Message> messages
+    - const String urlBase
+    - List<RouteAction> RouteActions
+
+    + MessageResourceEndpointHandler()
+    - RouteAction DetermineRouteAction(RequestContext requestContext)
+}
+ class RouteAction{
+     + String PathRegex {get;set;}
+     + Action<RequestContext> PathAction {get;set;}
+     + String RequestType {get;set;}
+
+     + RouteAction(IAction<RequestContext> pathAction, String pathRegex, String requestType)
+ }
+
+ class Message{
+     + int Id {get;set;}
+     + String Content {get;set;}
+     + DateTime SentDate {get;set;}
+ }
+
+class ResponseContext{
+    + String HTTPVersion {get;set;}
+    + String StatusMessage {get;set}
+    + int StatusCode {get;set}
+    + List<HttpHeaderPair> HeaderPairs {get;private set;}
+    + String Content {get;set;}
+
+    + static ResponseContext ResponseContext(String httpVersion, String statusMessage, int statusCode)
+    + void AddHeader(HttpHeaderPair httpHeaderPair)
+    + override string ToString()
+    - ResponseContext(String httpVersion, String statusMessage, int statusCode)
+}
+
+class HTTPResponseHandler{
+    + void OKResponse(NetworkStream networkStream, String content)
+    + void CreatedResponse(NetworkStream networkStream, String content)
+    + void UnauthorizedResponse(NetworkStream networkStream, String content)
+}
+
+
+ BaseHTTPServer o-- IResourceEndpointHandler
+ RequestContext o-- HttpHeaderPair
+ MessageResourceEndpointHandler o-- RouteAction
+ MessageResourceEndpointHandler o--Message
+MessageResourceEndpointHandler o-- HTTPResponseHandler
+
+HTTPResponseHandler..>ResponseContext
+ MessageResourceEndpointHandler ..> RequestContext
