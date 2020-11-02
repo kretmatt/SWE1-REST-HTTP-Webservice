@@ -10,8 +10,8 @@ Further steps are explained in this section.
 
 BaseHTTPServer receives the HTTP-Request an reads the from the NetworkStream. Afterwards all resource endpoint handlers are iterated and the "right" one is selected. Depending on the url structure and the method (GET, POST, PUT, DELETE) different CRUDHandler methods are used. Those CRUD handler methods do their "task" and send a response to the requester using the HTTPResponseHandler afterwards. 
 
-![Alt text](./httprestserver_classdiagram/httprestserver_classdiagram.svg)
-<img src="./httprestserver_classdiagram/httprestserver_classdiagram.svg">
+![Class diagram of the project](./httprestserver_classdiagram/httprestserver_classdiagram.svg)
+
 
 ## Route Actions
 
