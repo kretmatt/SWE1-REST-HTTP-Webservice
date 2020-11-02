@@ -12,7 +12,6 @@ BaseHTTPServer receives the HTTP-Request an reads the from the NetworkStream. Af
 
 ![Class diagram of the project](./httprestserver_classdiagram/httprestserver_classdiagram.svg)
 
-
 ## Route Actions
 
 I wasn't really sure how to implement different endpoints and check if they are valid. That's why i created the RouteAction class. It consists of the Type/method (e.g.: GET), a regex expression which is used for validating the requested url and an Action. The action is executed if the regex expression and the method equal the HTTP request.
