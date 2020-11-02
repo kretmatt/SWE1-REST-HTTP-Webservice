@@ -45,6 +45,7 @@
         <Compile Include="HttpHeaderPairTests.cs" />
         <Compile Include="RequestContextUnitTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="RouteActionTests.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SWE1-REST-HTTP-Webservice\SWE1-REST-HTTP-Webservice.csproj">
