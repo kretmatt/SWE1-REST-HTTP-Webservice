@@ -59,6 +59,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="BaseHTTPServerTests.cs" />
         <Compile Include="HttpHeaderPairTests.cs" />
         <Compile Include="MessageResourceEndpointHandlerTests.cs" />
         <Compile Include="RequestContextUnitTests.cs" />
