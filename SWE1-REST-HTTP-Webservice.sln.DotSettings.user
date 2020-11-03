@@ -1,0 +1,12 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ad2087af_002Dfe3c_002D4c52_002Da046_002D3c61fbf4bae7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetBaseRequestTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.RequestContextUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.HttpHeaderPairTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.RouteActionTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.MessageResourceEndpointHandlerTests.CheckResponsibility&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.MessageResourceEndpointHandlerTests.HandleRequestTest&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.MessageResourceEndpointHandlerTests&lt;/TestId&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.BaseHTTPServerTests&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

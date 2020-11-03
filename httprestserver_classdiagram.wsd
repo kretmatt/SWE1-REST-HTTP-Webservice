@@ -1,4 +1,4 @@
-class BaseHTTPServer{
+class BaseHTTPServer implements IHTTPServer{
     + const string VERSION
     + const string NAME
     - int port
@@ -85,6 +85,10 @@ class HTTPResponseHandler{
     + void OKResponse(NetworkStream networkStream, String content)
     + void CreatedResponse(NetworkStream networkStream, String content)
     + void UnauthorizedResponse(NetworkStream networkStream, String content)
+}
+
+interface IHTTPServer{
+    + void Start()
 }
 
 
