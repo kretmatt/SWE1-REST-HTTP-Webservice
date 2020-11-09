@@ -39,33 +39,37 @@ interface IResourceEndpointHandler{
 }
 
 interface ICRUDHandler{
-    + void ListHandler(RequestContext requestContext)
-    + void CreateHandler(RequestContext requestContext)
-    + void ReadHandler(RequestContext requestContext)
-    + void UpdateHandler(RequestContext requestContext)
-    + void DeleteHandler(RequestContext requestContext)
+    + void ListHandler(RequestContext requestContext, NetworkStream networkStream)
+    + void CreateHandler(RequestContext requestContext, NetworkStream networkStream)
+    + void ReadHandler(RequestContext requestContext, NetworkStream networkStream)
+    + void UpdateHandler(RequestContext requestContext, NetworkStream networkStream)
+    + void DeleteHandler(RequestContext requestContext, NetworkStream networkStream)
 }
 
 class MessageResourceEndpointHandler implements IResourceEndpointHandler, ICRUDHandler{
-    - List<Message> messages
+    - List<Message> _messages
     - const String urlBase
     - List<RouteAction> RouteActions
+    - int nextId;
 
     + MessageResourceEndpointHandler()
     - RouteAction DetermineRouteAction(RequestContext requestContext)
+    - void SendResponse(ResponseContext responseContext, NetworkStream networkStream)
 }
  class RouteAction{
      + String PathRegex {get;set;}
-     + Action<RequestContext> PathAction {get;set;}
+     + Action<RequestContext, NetworkStream> PathAction {get;set;}
      + String RequestType {get;set;}
 
-     + RouteAction(IAction<RequestContext> pathAction, String pathRegex, String requestType)
+     + RouteAction(IAction<RequestContext, NetworkStream> pathAction, String pathRegex, String requestType)
  }
 
  class Message{
      + int Id {get;set;}
      + String Content {get;set;}
      + DateTime SentDate {get;set;}
+
+     + override string ToString()
  }
 
 class ResponseContext{
@@ -73,18 +77,16 @@ class ResponseContext{
     + String StatusMessage {get;set}
     + int StatusCode {get;set}
     + List<HttpHeaderPair> HeaderPairs {get;private set;}
-    + String Content {get;set;}
+    + String Content {get;private set;}
 
-    + static ResponseContext ResponseContext(String httpVersion, String statusMessage, int statusCode)
-    + void AddHeader(HttpHeaderPair httpHeaderPair)
+    + static ResponseContext OKResponse()
+    + static ResponseContext CreatedResponse()
+    + static ResponseContext NotFoundResponse()
+    + static ResponseContext BadRequestResponse()
+    + ResponseContext AddHeader(HttpHeaderPair httpHeaderPair)
+    + ResponseContext SetContent(String content, String contentType)
     + override string ToString()
     - ResponseContext(String httpVersion, String statusMessage, int statusCode)
-}
-
-class HTTPResponseHandler{
-    + void OKResponse(NetworkStream networkStream, String content)
-    + void CreatedResponse(NetworkStream networkStream, String content)
-    + void UnauthorizedResponse(NetworkStream networkStream, String content)
 }
 
 interface IHTTPServer{
@@ -96,7 +98,6 @@ interface IHTTPServer{
  RequestContext o-- HttpHeaderPair
  MessageResourceEndpointHandler o-- RouteAction
  MessageResourceEndpointHandler o--Message
-MessageResourceEndpointHandler o-- HTTPResponseHandler
-
-HTTPResponseHandler..>ResponseContext
+ MessageResourceEndpointHandler ..> ResponseContext
  MessageResourceEndpointHandler ..> RequestContext
+ ResponseContext o-- HttpHeaderPair
