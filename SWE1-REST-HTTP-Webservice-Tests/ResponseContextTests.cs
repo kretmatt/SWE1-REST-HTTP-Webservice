@@ -11,8 +11,6 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         private string headerValue = "application/json";
         private string content = "123";
         private string contentType = "text/plain";
-        
-        
         [Test]
         public void AddHeaderTest()
         {

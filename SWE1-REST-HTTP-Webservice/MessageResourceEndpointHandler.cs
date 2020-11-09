@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net.Mime;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace SWE1_REST_HTTP_Webservice
@@ -9,8 +13,10 @@ namespace SWE1_REST_HTTP_Webservice
         private List<Message> _messages;
         private const String urlBase = "/messages";
         private List<RouteAction> RouteActions;
+        private int nextId;
         public MessageResourceEndpointHandler()
         {
+            nextId = 1;
             _messages=new List<Message>();
             RouteActions=new List<RouteAction>()
             {
@@ -66,50 +72,129 @@ namespace SWE1_REST_HTTP_Webservice
             return endpointAction;
         }
 
-        public void HandleRequest(RequestContext requestContext)
+        public void HandleRequest(RequestContext requestContext, NetworkStream networkStream)
         {
             RouteAction routeAction = DetermineRouteAction(requestContext);
             if (routeAction != null)
-                routeAction.PathAction(requestContext);
+                routeAction.PathAction(requestContext, networkStream);
             else
             {
                 Console.WriteLine("sdfdsfdsf");
             }
         }
 
-        public void ListHandler(RequestContext requestContext)
+        public void ListHandler(RequestContext requestContext,NetworkStream networkStream)
         {
-            Console.WriteLine("Messages List");
-            Console.WriteLine(requestContext.Type);
-            Console.WriteLine(requestContext.URL);
+            Console.WriteLine("Messages List - {0} {1}",requestContext.Type,requestContext.URL);
+            ResponseContext responseContext=ResponseContext.OKResponse().SetContent(String.Concat(_messages),"text/plain");
+            SendResponse(responseContext,networkStream);
         }
 
-        public void CreateHandler(RequestContext requestContext)
+        public void CreateHandler(RequestContext requestContext,NetworkStream networkStream)
         {
-            Console.WriteLine("Messages Create");
-            Console.WriteLine(requestContext.Type);
-            Console.WriteLine(requestContext.URL);
+            Console.WriteLine("Messages Create - {0} {1}",requestContext.Type,requestContext.URL);
+            ResponseContext responseContext;
+            if (String.IsNullOrEmpty(requestContext.Body))
+            {
+                responseContext=ResponseContext.BadRequestResponse();
+            }
+            else
+            {
+                Message message = new Message();
+                message.Id = nextId;
+                message.Content = requestContext.Body;
+                message.SentDate=DateTime.Now;
+                _messages.Add(message);
+                nextId++;
+                responseContext=ResponseContext.CreatedResponse().SetContent(
+                    message.Id.ToString(),
+                    "text/plain"
+                    );
+            }
+            SendResponse(responseContext,networkStream);
         }
         
-        public void ReadHandler(RequestContext requestContext)
+        public void ReadHandler(RequestContext requestContext,NetworkStream networkStream)
         {
-            Console.WriteLine("Messages Read");
-            Console.WriteLine(requestContext.Type);
-            Console.WriteLine(requestContext.URL);
+            Console.WriteLine("Messages Read - {0} {1}",requestContext.Type,requestContext.URL);
+            ResponseContext responseContext;
+            String[] urlParts = requestContext.URL.Split('/');
+            int requestedResourceId;
+            if (int.TryParse(urlParts[2], out requestedResourceId))
+            {
+                Message message = _messages.SingleOrDefault(m => m.Id == requestedResourceId);
+                if (message!=null)
+                {
+                    responseContext = ResponseContext.OKResponse().SetContent(message.ToString(), "text/plain");
+                }
+                else
+                {
+                    responseContext = ResponseContext.NotFoundResponse();
+                }
+            }
+            else
+            {
+                responseContext = ResponseContext.BadRequestResponse();
+            }
+            SendResponse(responseContext,networkStream);
         }
 
-        public void UpdateHandler(RequestContext requestContext)
+        public void UpdateHandler(RequestContext requestContext,NetworkStream networkStream)
         {
-            Console.WriteLine("Messages Update");
-            Console.WriteLine(requestContext.Type);
-            Console.WriteLine(requestContext.URL);
+            Console.WriteLine("Messages Update - {0} {1}",requestContext.Type,requestContext.URL);
+            ResponseContext responseContext;
+            String[] urlParts = requestContext.URL.Split('/');
+            int requestedResourceId;
+            if (int.TryParse(urlParts[2], out requestedResourceId))
+            {
+                Message message = _messages.SingleOrDefault(m => m.Id == requestedResourceId);
+                if (message!=null)
+                {
+                    message.Content = requestContext.Body;
+                    responseContext = ResponseContext.OKResponse().SetContent(message.Id.ToString(), "text/plain");
+                }
+                else
+                {
+                    responseContext = ResponseContext.NotFoundResponse();
+                }
+            }
+            else
+            {
+                responseContext = ResponseContext.BadRequestResponse();
+            }
+            SendResponse(responseContext,networkStream);
         }
 
-        public void DeleteHandler(RequestContext requestContext)
+        public void DeleteHandler(RequestContext requestContext,NetworkStream networkStream)
         {
-            Console.WriteLine("Messages Delete");
-            Console.WriteLine(requestContext.Type);
-            Console.WriteLine(requestContext.URL);
+            Console.WriteLine("Messages Delete - {0} {1}",requestContext.Type,requestContext.URL);
+            ResponseContext responseContext;
+            String[] urlParts = requestContext.URL.Split('/');
+            int requestedResourceId;
+            if (int.TryParse(urlParts[2], out requestedResourceId))
+            {
+                Message message = _messages.SingleOrDefault(m => m.Id == requestedResourceId);
+                if (message!=null)
+                {
+                    _messages.Remove(message);
+                    responseContext = ResponseContext.OKResponse().SetContent(message.Id.ToString(), "text/plain");
+                }
+                else
+                {
+                    responseContext = ResponseContext.NotFoundResponse();
+                }
+            }
+            else
+            {
+                responseContext = ResponseContext.BadRequestResponse();
+            }
+            SendResponse(responseContext,networkStream);
+        }
+
+        private void SendResponse(ResponseContext responseContext, NetworkStream networkStream)
+        {
+            using(StreamWriter streamWriter= new StreamWriter(networkStream))
+                streamWriter.Write(responseContext.ToString());
         }
         
     }

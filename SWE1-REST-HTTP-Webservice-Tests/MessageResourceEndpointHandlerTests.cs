@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Moq;
 using NUnit.Framework;
 using SWE1_REST_HTTP_Webservice;
@@ -8,12 +9,14 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     public class MessageResourceEndpointHandlerTests
     {
         private RequestContext _requestContext;
+        private NetworkStream _networkStream;
 
         [SetUp]
         public void SetUp()
         {
             _requestContext = RequestContext.GetBaseRequest("GET /messages HTTP/1.1");
             _requestContext.AddHeader("Content-Type: text/plain");
+            _networkStream=null;
         }
 
         [Test]
@@ -33,9 +36,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         {   //arrange
             var mockResourceEndpointHandler = new Mock<IResourceEndpointHandler>();
             //act
-            mockResourceEndpointHandler.Object.HandleRequest(_requestContext);
+            mockResourceEndpointHandler.Object.HandleRequest(_requestContext,_networkStream);
             //assert
-            mockResourceEndpointHandler.Verify(resourceEndpointHandler=>resourceEndpointHandler.HandleRequest(_requestContext));
+            mockResourceEndpointHandler.Verify(resourceEndpointHandler=>resourceEndpointHandler.HandleRequest(_requestContext,_networkStream));
         }
 
         [Test]
@@ -44,9 +47,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var crudHandlerMock = new Mock<ICRUDHandler>();
             //act
-            crudHandlerMock.Object.ListHandler(_requestContext);
+            crudHandlerMock.Object.ListHandler(_requestContext, _networkStream);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.ListHandler(_requestContext));
+            crudHandlerMock.Verify(crudHandler=>crudHandler.ListHandler(_requestContext, _networkStream));
         }
 
         [Test]
@@ -55,9 +58,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var crudHandlerMock = new Mock<ICRUDHandler>();
             //act
-            crudHandlerMock.Object.CreateHandler(_requestContext);
+            crudHandlerMock.Object.CreateHandler(_requestContext, _networkStream);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.CreateHandler(_requestContext));
+            crudHandlerMock.Verify(crudHandler=>crudHandler.CreateHandler(_requestContext, _networkStream));
         }
 
         [Test]
@@ -66,9 +69,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var crudHandlerMock = new Mock<ICRUDHandler>();
             //act
-            crudHandlerMock.Object.ReadHandler(_requestContext);
+            crudHandlerMock.Object.ReadHandler(_requestContext, _networkStream);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.ReadHandler(_requestContext));
+            crudHandlerMock.Verify(crudHandler=>crudHandler.ReadHandler(_requestContext, _networkStream));
         }
 
         [Test]
@@ -77,9 +80,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var crudHandlerMock = new Mock<ICRUDHandler>();
             //act
-            crudHandlerMock.Object.UpdateHandler(_requestContext);
+            crudHandlerMock.Object.UpdateHandler(_requestContext,_networkStream);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.UpdateHandler(_requestContext));
+            crudHandlerMock.Verify(crudHandler=>crudHandler.UpdateHandler(_requestContext, _networkStream));
         }
 
         [Test]
@@ -88,9 +91,9 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var crudHandlerMock = new Mock<ICRUDHandler>();
             //act
-            crudHandlerMock.Object.DeleteHandler(_requestContext);
+            crudHandlerMock.Object.DeleteHandler(_requestContext, _networkStream);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.DeleteHandler(_requestContext));
+            crudHandlerMock.Verify(crudHandler=>crudHandler.DeleteHandler(_requestContext, _networkStream));
         }
     }
 }
