@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 using NUnit.Framework;
 using SWE1_REST_HTTP_Webservice;
 
@@ -9,7 +10,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     {
         private String sampleRegex = String.Format(@"^\{0}\/[0-9]+$", "/messages");
         private String sampleRequestType = "GET";
-        private Action<RequestContext> samplePathAction = (RequestContext requestContext) => { };
+        private Action<RequestContext, NetworkStream> samplePathAction = (RequestContext requestContext, NetworkStream networkStream) => { };
 
 
         [Test]
