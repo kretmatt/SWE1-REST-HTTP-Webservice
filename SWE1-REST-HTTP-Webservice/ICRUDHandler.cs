@@ -4,10 +4,10 @@ namespace SWE1_REST_HTTP_Webservice
 {
     public interface ICRUDHandler
     {
-        void ListHandler(RequestContext requestContext,NetworkStream networkStream);
-        void CreateHandler(RequestContext requestContext,NetworkStream networkStream);
-        void ReadHandler(RequestContext requestContext,NetworkStream networkStream);
-        void UpdateHandler(RequestContext requestContext,NetworkStream networkStream);
-        void DeleteHandler(RequestContext requestContext,NetworkStream networkStream);
+        ResponseContext ListHandler(RequestContext requestContext);
+        ResponseContext CreateHandler(RequestContext requestContext);
+        ResponseContext ReadHandler(RequestContext requestContext);
+        ResponseContext UpdateHandler(RequestContext requestContext);
+        ResponseContext DeleteHandler(RequestContext requestContext);
     }
 }

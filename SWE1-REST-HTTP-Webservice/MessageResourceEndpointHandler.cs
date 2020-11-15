@@ -23,41 +23,33 @@ namespace SWE1_REST_HTTP_Webservice
                 new RouteAction(
                     ListHandler,
                     String.Format(@"^\{0}$",urlBase),
-                    "GET"
+                    EHTTPVerbs.GET
                     ),
                 new RouteAction(
                     CreateHandler,
                     String.Format(@"^\{0}$",urlBase),
-                    "POST"
+                    EHTTPVerbs.POST
                 ),
                 new RouteAction(
                     ReadHandler,
                     String.Format(@"^\{0}\/[0-9]+$",urlBase),
-                    "GET"
+                    EHTTPVerbs.GET
                 ),
                 new RouteAction(
                     UpdateHandler,
                     String.Format(@"^\{0}\/[0-9]+$",urlBase),
-                    "PUT"
+                    EHTTPVerbs.PUT
                 ),
                 new RouteAction(
                     DeleteHandler,
                     String.Format(@"^\{0}\/[0-9]+$",urlBase),
-                    "DELETE"
+                    EHTTPVerbs.DELETE
                 ),
             };
         }
         public bool CheckResponsibility(RequestContext requestContext)
         {
-            bool responsible = false;
-            
-            RouteActions.ForEach(ra =>
-            {
-                Regex re = new Regex(ra.PathRegex);
-                if (re.IsMatch(requestContext.URL)&&requestContext.Type==ra.RequestType)
-                    responsible = true;
-            });
-            return responsible;
+            return requestContext.URL.StartsWith(String.Format("{0}/",urlBase))||requestContext.URL==urlBase;
         }
 
         private RouteAction DetermineRouteAction(RequestContext requestContext)
@@ -66,31 +58,35 @@ namespace SWE1_REST_HTTP_Webservice
             RouteActions.ForEach(ra =>
             {
                 Regex re = new Regex(ra.PathRegex);
-                if (re.IsMatch(requestContext.URL)&&requestContext.Type==ra.RequestType)
+                
+                if (re.IsMatch(requestContext.URL)&&ra.RequestType==requestContext.Type)
                     endpointAction = ra;
             });
             return endpointAction;
         }
 
-        public void HandleRequest(RequestContext requestContext, NetworkStream networkStream)
+        public ResponseContext HandleRequest(RequestContext requestContext)
         {
             RouteAction routeAction = DetermineRouteAction(requestContext);
+            ResponseContext responseContext;
             if (routeAction != null)
-                routeAction.PathAction(requestContext, networkStream);
+                responseContext=routeAction.PathAction(requestContext);
             else
             {
-                Console.WriteLine("sdfdsfdsf");
+                responseContext = ResponseContext.BadRequestResponse();
             }
+
+            return responseContext;
         }
 
-        public void ListHandler(RequestContext requestContext,NetworkStream networkStream)
+        public ResponseContext ListHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages List - {0} {1}",requestContext.Type,requestContext.URL);
             ResponseContext responseContext=ResponseContext.OKResponse().SetContent(String.Concat(_messages),"text/plain");
-            SendResponse(responseContext,networkStream);
+            return responseContext;
         }
 
-        public void CreateHandler(RequestContext requestContext,NetworkStream networkStream)
+        public ResponseContext CreateHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages Create - {0} {1}",requestContext.Type,requestContext.URL);
             ResponseContext responseContext;
@@ -111,10 +107,11 @@ namespace SWE1_REST_HTTP_Webservice
                     "text/plain"
                     );
             }
-            SendResponse(responseContext,networkStream);
+
+            return responseContext;
         }
         
-        public void ReadHandler(RequestContext requestContext,NetworkStream networkStream)
+        public ResponseContext ReadHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages Read - {0} {1}",requestContext.Type,requestContext.URL);
             ResponseContext responseContext;
@@ -136,10 +133,10 @@ namespace SWE1_REST_HTTP_Webservice
             {
                 responseContext = ResponseContext.BadRequestResponse();
             }
-            SendResponse(responseContext,networkStream);
+            return responseContext;
         }
 
-        public void UpdateHandler(RequestContext requestContext,NetworkStream networkStream)
+        public ResponseContext UpdateHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages Update - {0} {1}",requestContext.Type,requestContext.URL);
             ResponseContext responseContext;
@@ -162,10 +159,11 @@ namespace SWE1_REST_HTTP_Webservice
             {
                 responseContext = ResponseContext.BadRequestResponse();
             }
-            SendResponse(responseContext,networkStream);
+
+            return responseContext;
         }
 
-        public void DeleteHandler(RequestContext requestContext,NetworkStream networkStream)
+        public ResponseContext DeleteHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages Delete - {0} {1}",requestContext.Type,requestContext.URL);
             ResponseContext responseContext;
@@ -188,14 +186,8 @@ namespace SWE1_REST_HTTP_Webservice
             {
                 responseContext = ResponseContext.BadRequestResponse();
             }
-            SendResponse(responseContext,networkStream);
-        }
 
-        private void SendResponse(ResponseContext responseContext, NetworkStream networkStream)
-        {
-            using(StreamWriter streamWriter= new StreamWriter(networkStream))
-                streamWriter.Write(responseContext.ToString());
+            return responseContext;
         }
-        
     }
 }

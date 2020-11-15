@@ -39,6 +39,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="BaseHTTPServer.cs" />
+        <Compile Include="EHTTPVerbs.cs" />
         <Compile Include="HttpHeaderPair.cs" />
         <Compile Include="ICRUDHandler.cs" />
         <Compile Include="IHTTPServer.cs" />

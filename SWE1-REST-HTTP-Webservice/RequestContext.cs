@@ -5,13 +5,13 @@ namespace SWE1_REST_HTTP_Webservice
 {
     public class RequestContext
     {
-        public String Type { get; set; }
+        public EHTTPVerbs Type { get; set; }
         public String URL { get; set; }
         public String HTTPVersion { get; set; }
         public List<HttpHeaderPair> HeaderPairs { get; private set; }
         public String Body { get; set; }
         
-        private RequestContext(String type,String url,String httpVersion)
+        private RequestContext(EHTTPVerbs type,String url,String httpVersion)
         {
             Type = type;
             URL = url;
@@ -34,8 +34,11 @@ namespace SWE1_REST_HTTP_Webservice
             String type = tokens[0];
             String url = tokens[1];
             String httpVersion = tokens[2];
-            
-            return new RequestContext(type,url,httpVersion);
+
+            EHTTPVerbs requestType;
+            if (!EHTTPVerbs.TryParse(type, out requestType))
+                return null;
+            return new RequestContext(requestType,url,httpVersion);
         }
 
         public override string ToString()
