@@ -11,7 +11,7 @@ namespace SWE1_REST_HTTP_Webservice
 
     {
         public const String VERSION = "HTTP/1.1";
-        public const String NAME = "FHTW SWE HTTP Server v0.1";
+        public const String NAME = "FHTW SWE HTTP Server v1.0";
 
         private int port;
         private bool running = false;
