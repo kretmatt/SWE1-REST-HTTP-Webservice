@@ -44,6 +44,8 @@
         <Compile Include="ICRUDHandler.cs" />
         <Compile Include="IHTTPServer.cs" />
         <Compile Include="IResourceEndpointHandler.cs" />
+        <Compile Include="ITcpClient.cs" />
+        <Compile Include="ITcpListener.cs" />
         <Compile Include="Message.cs" />
         <Compile Include="MessageResourceEndpointHandler.cs" />
         <Compile Include="Program.cs" />
@@ -51,6 +53,8 @@
         <Compile Include="RequestContext.cs" />
         <Compile Include="ResponseContext.cs" />
         <Compile Include="RouteAction.cs" />
+        <Compile Include="TcpClient.cs" />
+        <Compile Include="TcpListener.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

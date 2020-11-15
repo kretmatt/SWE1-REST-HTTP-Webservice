@@ -56,7 +56,7 @@ namespace SWE1_REST_HTTP_Webservice
         {
             String msg = "";
             RequestContext requestContext;
-            NetworkStream networkStream = client.GetStream();
+            NetworkStream networkStream = (NetworkStream) client.GetStream();
             bool requestHandled = false;
             ResponseContext responseContext=ResponseContext.BadRequestResponse();
             using (StreamReader streamReader = new StreamReader(networkStream))
