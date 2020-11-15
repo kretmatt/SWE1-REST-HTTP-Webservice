@@ -1,0 +1,142 @@
+class BaseHTTPServer implements IHTTPServer{
+    + const string VERSION
+    + const string NAME
+    + List<IResourceEndpointHandler> resourceEndpointHandlers
+    - int port
+    - bool running
+    - ITcpListener listener
+    
+
+    + BaseHTTPServer(int port)
+    - void Run()
+}
+
+class RequestContext{
+    + EHTTPVerbs Type {get;set;}
+    + String URL {get;set;}
+    + String HTTPVersion {get;set;}
+    + List<HttpHeaderPair> HeaderPairs {get;private set;}
+    + String Body {get;set;}
+
+    + void AddHeader(String headerLine)
+    + static RequestContext GetBaseRequest(String request)
+    + override string ToString()
+    - RequestContext(String type, String url, String httpVersion)
+}
+
+class HttpHeaderPair{
+    + String HeaderKey {get;set;}
+    + String HeaderValue {get;set;}
+
+    + HttpHeaderPair(String headerKey, String headerValue)
+    + override string ToString()
+}
+
+interface IResourceEndpointHandler{
+    + bool CheckResponsibility(RequestContext requestContext)
+    + ResponseContext HandleRequest(RequestContext requestContext)
+}
+
+interface ICRUDHandler{
+    + ResponseContext ListHandler(RequestContext requestContext)
+    + ResponseContext CreateHandler(RequestContext requestContext)
+    + ResponseContext ReadHandler(RequestContext requestContext)
+    + ResponseContext UpdateHandler(RequestContext requestContext)
+    + ResponseContext DeleteHandler(RequestContext requestContext)
+}
+
+class MessageResourceEndpointHandler implements IResourceEndpointHandler, ICRUDHandler{
+    - List<Message> _messages
+    - const String urlBase
+    - List<RouteAction> RouteActions
+    - int nextId;
+
+    + MessageResourceEndpointHandler()
+    - RouteAction DetermineRouteAction(RequestContext requestContext)
+}
+ class RouteAction{
+     + String PathRegex {get;set;}
+     + Func<RequestContext, ResponseContext> PathAction {get;set;}
+     + EHTTPVerbs RequestType {get;set;}
+
+     + RouteAction(Func<RequestContext, ResponseContext> pathAction, String pathRegex, EHTTPVerbs requestType)
+ }
+
+ class Message{
+     + int Id {get;set;}
+     + String Content {get;set;}
+     + DateTime SentDate {get;set;}
+
+     + override string ToString()
+ }
+
+class ResponseContext{
+    + String HTTPVersion {get;set;}
+    + String StatusMessage {get;set}
+    + int StatusCode {get;set}
+    + List<HttpHeaderPair> HeaderPairs {get;private set;}
+    + String Content {get;private set;}
+
+    + static ResponseContext OKResponse()
+    + static ResponseContext CreatedResponse()
+    + static ResponseContext NotFoundResponse()
+    + static ResponseContext BadRequestResponse()
+    + ResponseContext AddHeader(HttpHeaderPair httpHeaderPair)
+    + ResponseContext SetContent(String content, String contentType)
+    + override string ToString()
+    - ResponseContext(String httpVersion, String statusMessage, int statusCode)
+}
+
+interface IHTTPServer{
+    + void Start()
+    + void HandleClient(ITcpClient tcpClient)
+}
+
+
+enum EHTTPVerbs{
+    GET,
+    HEAD,
+    POST,
+    DELETE,
+    PUT,
+    CONNECT,
+    TRACE,
+    PATCH,
+    OPTIONS
+}
+
+interface ITcpClient implements IDisposable{
+    + Stream GetStream()
+    + void Close()
+}
+
+interface ITcpListener{
+    + void Start()
+    + void Stop()
+    + TcpClient AcceptTcpClient()
+}
+
+class TcpClient implements ITcpClient{
+    - readonly System.Net.Sockets.TcpClient _client
+
+    + TcpClient()
+    + TcpClient(System.Net.Sockets.TcpClient tcpClient)
+}
+
+class TcpListener implements ITcpListener{
+    - readonly System.Net.Sockets.TcpListener _tcpListener;
+
+    + TcpListener(IPAddress ipAddress, in port)
+}
+
+
+ BaseHTTPServer o-- IResourceEndpointHandler
+ RequestContext o-- HttpHeaderPair
+ MessageResourceEndpointHandler o-- RouteAction
+ MessageResourceEndpointHandler o--Message
+ MessageResourceEndpointHandler ..> ResponseContext
+ MessageResourceEndpointHandler ..> RequestContext
+ ResponseContext o-- HttpHeaderPair
+ BaseHTTPServer ..> ITcpClient
+ BaseHTTPServer o-- ITcpListener
+ ITcpListener ..> ITcpClient
