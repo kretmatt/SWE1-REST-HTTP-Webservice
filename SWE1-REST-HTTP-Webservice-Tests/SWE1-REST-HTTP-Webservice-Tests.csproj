@@ -66,6 +66,8 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="ResponseContextTests.cs" />
         <Compile Include="RouteActionTests.cs" />
+        <Compile Include="TcpClientTests.cs" />
+        <Compile Include="TcpListenerTests.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SWE1-REST-HTTP-Webservice\SWE1-REST-HTTP-Webservice.csproj">
