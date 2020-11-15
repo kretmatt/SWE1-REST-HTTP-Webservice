@@ -1,4 +1,13 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ad2087af_002Dfe3c_002D4c52_002Da046_002D3c61fbf4bae7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="GetBaseRequestTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=8e685611_002Df377_002D49b8_002Dbbf6_002D6aa4b3f6c4b9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="HandleClientMock" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;NUnit3x::72F9A88E-C2D2-47B7-A1BC-0D81CF7E8990::.NETFramework,Version=v4.8::SWE1_REST_HTTP_Webservice_Tests.BaseHTTPServerTests.HandleClientMock&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ad2087af_002Dfe3c_002D4c52_002Da046_002D3c61fbf4bae7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="GetBaseRequestTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/home/matthias/Desktop/FH/SWE/Github-Clones/SWE1-REST-HTTP-Webservice/SWE1-REST-HTTP-Webservice-Tests" Presentation="&amp;lt;SWE1-REST-HTTP-Webservice-Tests&amp;gt;" /&gt;
-&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=b36538ca_002Dff6f_002D49e7_002Db297_002D4164dade58d9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ServerAccessibilityResponsivenessTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;Project Location="/home/matthias/Desktop/FH/SWE/Github-Clones/SWE1-REST-HTTP-Webservice/SWE1-REST-HTTP-Webservice-Tests" Presentation="&amp;lt;SWE1-REST-HTTP-Webservice-Tests&amp;gt;" /&gt;
+&lt;/SessionState&gt;</s:String>
+	</wpf:ResourceDictionary>

@@ -52,42 +52,46 @@ namespace SWE1_REST_HTTP_Webservice
         }
 
 
-        private void HandleClient(TcpClient client)
+        public void HandleClient(ITcpClient client)
         {
             String msg = "";
             RequestContext requestContext;
             NetworkStream networkStream = (NetworkStream) client.GetStream();
-            bool requestHandled = false;
-            ResponseContext responseContext=ResponseContext.BadRequestResponse();
-            using (StreamReader streamReader = new StreamReader(networkStream))
+            if (networkStream != null)
             {
-                requestContext = RequestContext.GetBaseRequest(streamReader.ReadLine());
-                while ((msg = streamReader.ReadLine()) != "")
+                
+                bool requestHandled = false;
+                ResponseContext responseContext=ResponseContext.BadRequestResponse();
+                using (StreamReader streamReader = new StreamReader(networkStream))
                 {
-                    requestContext.AddHeader(msg);
-                }
-
-                msg = "";
-
-                while (streamReader.Peek() != -1)
-                {
-                    msg += (char) streamReader.Read();
-                }
-
-                requestContext.Body = msg;
-                Console.WriteLine(requestContext.ToString());
-
-                /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore */
-                ResourceEndpointHandlers.ForEach(reh =>
-                {
-                    if (reh.CheckResponsibility(requestContext))
+                    requestContext = RequestContext.GetBaseRequest(streamReader.ReadLine());
+                    while ((msg = streamReader.ReadLine()) != "")
                     {
-                        responseContext=reh.HandleRequest(requestContext);
+                        requestContext.AddHeader(msg);
                     }
-                });
 
-                using (StreamWriter streamWriter = new StreamWriter(client.GetStream()))
-                    streamWriter.Write(responseContext.ToString());
+                    msg = "";
+
+                    while (streamReader.Peek() != -1)
+                    {
+                        msg += (char) streamReader.Read();
+                    }
+
+                    requestContext.Body = msg;
+                    Console.WriteLine(requestContext.ToString());
+
+                    /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore */
+                    ResourceEndpointHandlers.ForEach(reh =>
+                    {
+                        if (reh.CheckResponsibility(requestContext))
+                        {
+                            responseContext=reh.HandleRequest(requestContext);
+                        }
+                    });
+
+                    using (StreamWriter streamWriter = new StreamWriter(client.GetStream()))
+                        streamWriter.Write(responseContext.ToString());
+                }
             }
             client.Close();
         }

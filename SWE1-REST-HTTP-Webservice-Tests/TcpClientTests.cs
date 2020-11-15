@@ -10,7 +10,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     public class TcpClientTests
     {
         private Stream mockStream;
-        private byte[] streamContent = Encoding.UTF8.GetBytes("TestStream!");
+        private byte[] streamContent = Encoding.UTF8.GetBytes(RequestContext.GetBaseRequest("GET /messages HTTP/1.1").ToString());
         [SetUp]
         public void SetUp()
         {

@@ -16,7 +16,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         }
         
         [Test]
-        public void StartTest()
+        public void StartMock()
         {
             //arrange
             var startMock = new Mock<ITcpListener>();
@@ -27,7 +27,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         }
 
         [Test]
-        public void StopTest()
+        public void StopMock()
         {
             //arrange
             var stopMock = new Mock<ITcpListener>();
@@ -38,7 +38,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         }
 
         [Test]
-        public void AcceptTcpClientTest()
+        public void AcceptTcpClientMock()
         {
             //arrange
             var acceptTcpClientMock = new Mock<ITcpListener>();
