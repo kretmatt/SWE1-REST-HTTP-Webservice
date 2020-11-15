@@ -9,8 +9,8 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     public class RouteActionTests
     {
         private String sampleRegex = String.Format(@"^\{0}\/[0-9]+$", "/messages");
-        private String sampleRequestType = "GET";
-        private Action<RequestContext, NetworkStream> samplePathAction = (RequestContext requestContext, NetworkStream networkStream) => { };
+        private EHTTPVerbs sampleRequestType = EHTTPVerbs.GET;
+        private Func<RequestContext, ResponseContext> samplePathAction = (RequestContext requestContext) => { return ResponseContext.OKResponse();};
 
 
         [Test]
@@ -21,7 +21,6 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //act
             routeAction=new RouteAction(samplePathAction,sampleRegex,sampleRequestType);
             //assert
-            
             Assert.AreEqual(sampleRegex,routeAction.PathRegex);
             Assert.AreEqual(sampleRequestType,routeAction.RequestType);
             Assert.AreEqual(samplePathAction, routeAction.PathAction);

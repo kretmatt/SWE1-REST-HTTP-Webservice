@@ -17,14 +17,14 @@ namespace SWE1_REST_HTTP_Webservice
         private bool running = false;
         private TcpListener listener;
 
-        private List<IResourceEndpointHandler> resourceEndpointHandlers;
+        public List<IResourceEndpointHandler> ResourceEndpointHandlers { get; set; }
 
         public BaseHTTPServer(int port)
         {
             this.port = port;
             listener = new TcpListener(IPAddress.Any, this.port);
-            resourceEndpointHandlers = new List<IResourceEndpointHandler>();
-            resourceEndpointHandlers.Add(new MessageResourceEndpointHandler());
+            ResourceEndpointHandlers = new List<IResourceEndpointHandler>();
+            ResourceEndpointHandlers.Add(new MessageResourceEndpointHandler());
         }
 
         public void Start()
@@ -58,6 +58,7 @@ namespace SWE1_REST_HTTP_Webservice
             RequestContext requestContext;
             NetworkStream networkStream = client.GetStream();
             bool requestHandled = false;
+            ResponseContext responseContext=ResponseContext.BadRequestResponse();
             using (StreamReader streamReader = new StreamReader(networkStream))
             {
                 requestContext = RequestContext.GetBaseRequest(streamReader.ReadLine());
@@ -77,19 +78,16 @@ namespace SWE1_REST_HTTP_Webservice
                 Console.WriteLine(requestContext.ToString());
 
                 /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore */
-                resourceEndpointHandlers.ForEach(reh =>
+                ResourceEndpointHandlers.ForEach(reh =>
                 {
                     if (reh.CheckResponsibility(requestContext))
                     {
-                        reh.HandleRequest(requestContext, networkStream);
-                        requestHandled = true;
+                        responseContext=reh.HandleRequest(requestContext);
                     }
                 });
-                if (requestHandled == false)
-                {
-                    using(StreamWriter streamWriter = new StreamWriter(networkStream))
-                        streamWriter.Write(ResponseContext.BadRequestResponse().ToString());
-                }
+
+                using (StreamWriter streamWriter = new StreamWriter(client.GetStream()))
+                    streamWriter.Write(responseContext.ToString());
             }
             client.Close();
         }

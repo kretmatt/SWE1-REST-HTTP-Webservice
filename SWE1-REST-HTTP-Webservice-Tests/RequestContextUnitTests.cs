@@ -11,7 +11,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     {
         private String sampleHttpHeaderKey = "Content-Type";
         private String sampleHttpHeaderValue = "text/plain";
-        private String sampleMethod = "GET";
+        private EHTTPVerbs sampleMethod = EHTTPVerbs.GET;
         private String sampleURL = "/messages";
         private String sampleHttpVersion = "HTTP/1.1";
         

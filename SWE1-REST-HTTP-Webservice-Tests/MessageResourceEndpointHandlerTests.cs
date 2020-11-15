@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.Sockets;
 using Moq;
 using NUnit.Framework;
@@ -8,92 +11,145 @@ namespace SWE1_REST_HTTP_Webservice_Tests
     [TestFixture]
     public class MessageResourceEndpointHandlerTests
     {
-        private RequestContext _requestContext;
-        private NetworkStream _networkStream;
-
+        private RequestContext _badRequestRequestContext;
+        private MessageResourceEndpointHandler _messageResourceEndpointHandler;
+        private string sampleCreateBody = "Hallo das ist ein Test!";
+        private static IEnumerable<TestCaseData> ReadHandlerFailureTests
+        {
+            get
+            {
+                yield return new TestCaseData(RequestContext.GetBaseRequest("GET /messages/3 HTTP/1.1"),ResponseContext.NotFoundResponse()); //resource does not exist
+                yield return new TestCaseData(RequestContext.GetBaseRequest("GET /messages/hallo HTTP/1.1"), ResponseContext.BadRequestResponse()); //not possible because id needs to be a numeric value
+                yield return new TestCaseData(RequestContext.GetBaseRequest("PUT /messages/3 HTTP/1.1"),ResponseContext.NotFoundResponse());//resource not found
+                yield return new TestCaseData(RequestContext.GetBaseRequest("PUT /messages/hallo HTTP/1.1"), ResponseContext.BadRequestResponse());//not possible because id needs to be a numeric value
+                yield return new TestCaseData(RequestContext.GetBaseRequest("DELETE /messages/3 HTTP/1.1"),ResponseContext.NotFoundResponse());//resource not found
+                yield return new TestCaseData(RequestContext.GetBaseRequest("DELETE /messages/hallo HTTP/1.1"), ResponseContext.BadRequestResponse());//not possible because id needs to be a numeric value
+                yield return new TestCaseData(RequestContext.GetBaseRequest("POST /messages HTTP/1.1"), ResponseContext.BadRequestResponse());//No content for creating a message
+            }
+        }
+        
         [SetUp]
         public void SetUp()
         {
-            _requestContext = RequestContext.GetBaseRequest("GET /messages HTTP/1.1");
-            _requestContext.AddHeader("Content-Type: text/plain");
-            _networkStream=null;
+            _badRequestRequestContext = RequestContext.GetBaseRequest("DELETE /messages HTTP/1.1");
+            _badRequestRequestContext.AddHeader("Content-Type: text/plain");
+            _messageResourceEndpointHandler=new MessageResourceEndpointHandler();
+            RequestContext createMessageRequest = RequestContext.GetBaseRequest("POST /messages HTTP/1.1");
+            createMessageRequest.Body = sampleCreateBody;
+            _messageResourceEndpointHandler.HandleRequest(createMessageRequest);
         }
 
         [Test]
         public void CheckResponsibility()
         {
             //arrange
-            MessageResourceEndpointHandler messageResourceEndpointHandler = new MessageResourceEndpointHandler();
             bool responsible;
             //act
-            responsible = messageResourceEndpointHandler.CheckResponsibility(_requestContext);
+            responsible = _messageResourceEndpointHandler.CheckResponsibility(_badRequestRequestContext);
             //assert
             Assert.IsTrue(responsible);
         }
 
         [Test]
-        public void HandleRequestMock()
-        {   //arrange
-            var mockResourceEndpointHandler = new Mock<IResourceEndpointHandler>();
+        public void HandleRequestBadRequestResponseTest()
+        {
+            //arrange
+            ResponseContext badRequestResponse;
             //act
-            mockResourceEndpointHandler.Object.HandleRequest(_requestContext,_networkStream);
-            //assert
-            mockResourceEndpointHandler.Verify(resourceEndpointHandler=>resourceEndpointHandler.HandleRequest(_requestContext,_networkStream));
+            badRequestResponse = _messageResourceEndpointHandler.HandleRequest(_badRequestRequestContext);
+            //assert -> I need to compare the values like this, because every response has a datetime string in headerpairs-List. Although the strings are equal at first glance, the assert will fail because of it. 
+            Assert.AreEqual(ResponseContext.BadRequestResponse().HTTPVersion, badRequestResponse.HTTPVersion);
+            Assert.AreEqual(ResponseContext.BadRequestResponse().HeaderPairs.Count, badRequestResponse.HeaderPairs.Count);
+            Assert.AreEqual(ResponseContext.BadRequestResponse().StatusMessage, badRequestResponse.StatusMessage);
+            Assert.AreEqual(ResponseContext.BadRequestResponse().StatusCode, badRequestResponse.StatusCode);
+            Assert.AreEqual(ResponseContext.BadRequestResponse().Content, badRequestResponse.Content);
         }
 
         [Test]
-        public void ListHandlerMock()
+        public void ListHandlerTest()
         {
             //arrange
-            var crudHandlerMock = new Mock<ICRUDHandler>();
+            ResponseContext responseContext;
+            RequestContext requestContext = RequestContext.GetBaseRequest("GET /messages HTTP/1.1");
             //act
-            crudHandlerMock.Object.ListHandler(_requestContext, _networkStream);
+            responseContext = _messageResourceEndpointHandler.HandleRequest(requestContext);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.ListHandler(_requestContext, _networkStream));
+            Assert.AreEqual(ResponseContext.OKResponse().StatusCode, responseContext.StatusCode);
+            Assert.AreEqual(ResponseContext.OKResponse().StatusMessage, responseContext.StatusMessage);
         }
 
         [Test]
-        public void CreateHandlerMock()
+        [TestCaseSource(nameof(ReadHandlerFailureTests))]
+        public void HandlerFailureTest(RequestContext requestContext, ResponseContext expectedResponse)
         {
             //arrange
-            var crudHandlerMock = new Mock<ICRUDHandler>();
+            ResponseContext responseContext;
             //act
-            crudHandlerMock.Object.CreateHandler(_requestContext, _networkStream);
+            responseContext = _messageResourceEndpointHandler.HandleRequest(requestContext);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.CreateHandler(_requestContext, _networkStream));
+            Assert.AreEqual(expectedResponse.StatusCode, responseContext.StatusCode);
+            Assert.AreEqual(expectedResponse.StatusMessage, responseContext.StatusMessage);
+
         }
 
         [Test]
-        public void ReadHandlerMock()
+        public void CreateHandlerTest()
         {
             //arrange
-            var crudHandlerMock = new Mock<ICRUDHandler>();
+            RequestContext requestContext = RequestContext.GetBaseRequest("POST /messages HTTP/1.1");
+            requestContext.Body = "Sample Message!";
+            ResponseContext responseContext;
             //act
-            crudHandlerMock.Object.ReadHandler(_requestContext, _networkStream);
+            responseContext = _messageResourceEndpointHandler.HandleRequest(requestContext);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.ReadHandler(_requestContext, _networkStream));
+            Assert.AreEqual(ResponseContext.CreatedResponse().StatusCode, responseContext.StatusCode);
+            Assert.AreEqual(ResponseContext.CreatedResponse().StatusMessage, responseContext.StatusMessage);
+            Assert.AreEqual("2",responseContext.Content );
         }
 
         [Test]
-        public void UpdateHandlerMock()
+        public void ReadHandlerTest()
         {
             //arrange
-            var crudHandlerMock = new Mock<ICRUDHandler>();
+            ResponseContext responseContext;
+            RequestContext requestContext = RequestContext.GetBaseRequest("GET /messages/1 HTTP/1.1");
             //act
-            crudHandlerMock.Object.UpdateHandler(_requestContext,_networkStream);
+            responseContext= _messageResourceEndpointHandler.HandleRequest(requestContext);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.UpdateHandler(_requestContext, _networkStream));
+            Assert.IsNotEmpty(responseContext.Content);
+            Assert.IsTrue(responseContext.Content.Contains(sampleCreateBody));
         }
 
         [Test]
-        public void DeleteHandlerMock()
+        public void DeleteHandlerTest()
         {
             //arrange
-            var crudHandlerMock = new Mock<ICRUDHandler>();
+            ResponseContext responseContext;
+            RequestContext requestContext = RequestContext.GetBaseRequest("DELETE /messages/1 HTTP/1.1");
             //act
-            crudHandlerMock.Object.DeleteHandler(_requestContext, _networkStream);
+            responseContext= _messageResourceEndpointHandler.HandleRequest(requestContext);
             //assert
-            crudHandlerMock.Verify(crudHandler=>crudHandler.DeleteHandler(_requestContext, _networkStream));
+            Assert.IsNotEmpty(responseContext.Content);
+            Assert.AreEqual("1",responseContext.Content);
+            Assert.AreEqual(ResponseContext.OKResponse().StatusCode,responseContext.StatusCode);
+            Assert.AreEqual(ResponseContext.OKResponse().StatusMessage, responseContext.StatusMessage);
+        }
+
+        [Test]
+        public void UpdateHandlerTest()
+        {
+            //arrange
+            ResponseContext responseContext;
+            RequestContext requestContext = RequestContext.GetBaseRequest("PUT /messages/1 HTTP/1.1");
+            string updatedMessage = "Update!";
+            requestContext.Body = updatedMessage;
+            //act
+            responseContext= _messageResourceEndpointHandler.HandleRequest(requestContext);
+            //assert
+            Assert.IsNotEmpty(responseContext.Content);
+            Assert.AreEqual("1",responseContext.Content);
+            Assert.AreEqual(ResponseContext.OKResponse().StatusCode,responseContext.StatusCode);
+            Assert.AreEqual(ResponseContext.OKResponse().StatusMessage, responseContext.StatusMessage);
         }
     }
 }
