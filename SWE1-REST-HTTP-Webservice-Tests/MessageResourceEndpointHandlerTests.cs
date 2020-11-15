@@ -59,10 +59,10 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             badRequestResponse = _messageResourceEndpointHandler.HandleRequest(_badRequestRequestContext);
             //assert -> I need to compare the values like this, because every response has a datetime string in headerpairs-List. Although the strings are equal at first glance, the assert will fail because of it. 
             Assert.AreEqual(ResponseContext.BadRequestResponse().HTTPVersion, badRequestResponse.HTTPVersion);
-            Assert.AreEqual(ResponseContext.BadRequestResponse().HeaderPairs.Count, badRequestResponse.HeaderPairs.Count);
+            Assert.AreEqual(ResponseContext.BadRequestResponse().HeaderPairs.Count+2, badRequestResponse.HeaderPairs.Count);//+2 due to default message for Bad Request
             Assert.AreEqual(ResponseContext.BadRequestResponse().StatusMessage, badRequestResponse.StatusMessage);
             Assert.AreEqual(ResponseContext.BadRequestResponse().StatusCode, badRequestResponse.StatusCode);
-            Assert.AreEqual(ResponseContext.BadRequestResponse().Content, badRequestResponse.Content);
+            Assert.AreEqual("No fitting endpoint could be found!", badRequestResponse.Content);
         }
 
         [Test]

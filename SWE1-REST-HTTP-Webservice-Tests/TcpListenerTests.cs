@@ -43,7 +43,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
             //arrange
             var acceptTcpClientMock = new Mock<ITcpListener>();
             acceptTcpClientMock.Setup(tcplistener => tcplistener.AcceptTcpClient()).Returns(_tcpClient);
-            TcpClient tcpClient;
+            ITcpClient tcpClient;
             //act
             tcpClient = acceptTcpClientMock.Object.AcceptTcpClient();
             //assert

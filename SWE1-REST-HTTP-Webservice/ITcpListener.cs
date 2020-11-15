@@ -6,6 +6,6 @@ namespace SWE1_REST_HTTP_Webservice
     {
         void Start();
         void Stop();
-        TcpClient AcceptTcpClient();
+        ITcpClient AcceptTcpClient();
     }
 }

@@ -15,7 +15,7 @@ namespace SWE1_REST_HTTP_Webservice
 
         private int port;
         private bool running = false;
-        private TcpListener listener;
+        private ITcpListener listener;
 
         public List<IResourceEndpointHandler> ResourceEndpointHandlers { get; set; }
 
@@ -41,7 +41,7 @@ namespace SWE1_REST_HTTP_Webservice
             while (running)
             {
                 Console.WriteLine("Waiting for connection ...");
-                TcpClient client = listener.AcceptTcpClient();
+                ITcpClient client = listener.AcceptTcpClient();
                 Console.WriteLine("Client connected");
                 Thread clientThread = new Thread(new ThreadStart(()=>HandleClient(client)));
                 clientThread.Start();
@@ -79,6 +79,9 @@ namespace SWE1_REST_HTTP_Webservice
                     }
 
                     requestContext.Body = msg;
+                    
+                    Console.WriteLine("\n<-- REQUEST -->\n");
+                    
                     Console.WriteLine(requestContext.ToString());
 
                     /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore */
@@ -92,6 +95,9 @@ namespace SWE1_REST_HTTP_Webservice
 
                     using (StreamWriter streamWriter = new StreamWriter(client.GetStream()))
                         streamWriter.Write(responseContext.ToString());
+                    
+                    Console.WriteLine("\n<-- RESPONSE -->\n");
+                    Console.WriteLine(responseContext.ToString());
                 }
             }
             client.Close();
