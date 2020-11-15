@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        MessageResourceEndpointHandler - Implementation of an endpoint handler. Responsible for messages.
+     */
     public class MessageResourceEndpointHandler : IResourceEndpointHandler, ICRUDHandler
     {
         private List<Message> _messages;
@@ -18,6 +21,7 @@ namespace SWE1_REST_HTTP_Webservice
         {
             nextId = 1;
             _messages=new List<Message>();
+            //RouteActions = Possible routes for this endpoint
             RouteActions=new List<RouteAction>()
             {
                 new RouteAction(

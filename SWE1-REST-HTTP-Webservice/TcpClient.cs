@@ -3,6 +3,9 @@ using System.Net.Sockets;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        TcpClient - An implementation, which forwards methods used by the server.
+     */
     public class TcpClient:ITcpClient
     {
         private readonly System.Net.Sockets.TcpClient _client;

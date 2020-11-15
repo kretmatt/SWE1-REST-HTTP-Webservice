@@ -6,6 +6,9 @@ using System.Runtime.Remoting.Messaging;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        ResponseContext - Represents a HTTP response. An object can only be created through the static methods.
+     */
     public class ResponseContext
     {
         public String HTTPVersion { get; set; }
@@ -40,13 +43,14 @@ namespace SWE1_REST_HTTP_Webservice
         {
             return new ResponseContext(BaseHTTPServer.VERSION, "Not Found", 404);
         }
-
+        
         public ResponseContext AddHeader(HttpHeaderPair httpHeaderPair)
         {
             HeaderPairs.Add(httpHeaderPair);
             return this;
         }
 
+        // SetContent sets the content and the corresponding headers for the response. Is an extension method.
         public ResponseContext SetContent(String content, String contentType)
         {
             if (!String.IsNullOrEmpty(content))

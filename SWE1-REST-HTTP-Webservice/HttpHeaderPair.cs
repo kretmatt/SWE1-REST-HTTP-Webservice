@@ -2,6 +2,9 @@ using System;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        HttpHeaderPair - A single header line in HTTP requests and responses.
+     */
     public class HttpHeaderPair
     {
         public String HeaderKey { get; set; }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        RequestContext - Represents a HTTP request.
+     */
     public class RequestContext
     {
         public EHTTPVerbs Type { get; set; }

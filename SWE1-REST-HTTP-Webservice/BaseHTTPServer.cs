@@ -7,6 +7,10 @@ using System.Threading;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    
+    /*
+        BaseHTTPServer - Concrete implementation of IHTTPServer.
+     */
     public class BaseHTTPServer : IHTTPServer
 
     {
@@ -65,14 +69,16 @@ namespace SWE1_REST_HTTP_Webservice
                 responseContext.SetContent("The requested resource was not found!","text/plain");
                 using (StreamReader streamReader = new StreamReader(networkStream))
                 {
+                    //Get first request line
                     requestContext = RequestContext.GetBaseRequest(streamReader.ReadLine());
+                    //Get headers
                     while ((msg = streamReader.ReadLine()) != "")
                     {
                         requestContext.AddHeader(msg);
                     }
 
                     msg = "";
-
+                    //Get body
                     while (streamReader.Peek() != -1)
                     {
                         msg += (char) streamReader.Read();
@@ -84,7 +90,6 @@ namespace SWE1_REST_HTTP_Webservice
                     
                     Console.WriteLine(requestContext.ToString());
 
-                    /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore */
                     ResourceEndpointHandlers.ForEach(reh =>
                     {
                         if (reh.CheckResponsibility(requestContext))
@@ -92,6 +97,7 @@ namespace SWE1_REST_HTTP_Webservice
                             responseContext=reh.HandleRequest(requestContext);
                         }
                     });
+                    /* Due to "using" the streamreader and the underlying stream (in this case networkstream of tcpclient) are closed. Afterwards you can't access the stream anymore. That's why there is a using-Statement in another using-Statement */
 
                     using (StreamWriter streamWriter = new StreamWriter(client.GetStream()))
                         streamWriter.Write(responseContext.ToString());

@@ -2,6 +2,9 @@ using System.Net;
 
 namespace SWE1_REST_HTTP_Webservice
 {
+    /*
+        TcpListener - An implementation, which can only forward the methods that are used in the server.
+     */
     public class TcpListener:ITcpListener
     {
         private readonly System.Net.Sockets.TcpListener _tcpListener;
