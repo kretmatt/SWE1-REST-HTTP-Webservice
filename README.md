@@ -2,6 +2,8 @@
 
 Webservice handler based on a restful HTTP-based server. For testing purposes a message resource is created and all corresponding methods (CRUD) are implemented. This project was programmed with Rider.
 
+The [Github Repository](https://github.com/kretmatt/SWE1-REST-HTTP-Webservice) is public. All commits can be seen there.
+
 # Special explanatory notes
 
 Further steps are explained in this section.
