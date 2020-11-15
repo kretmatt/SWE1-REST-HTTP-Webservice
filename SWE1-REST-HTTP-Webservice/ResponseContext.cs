@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Messaging;
 
 namespace SWE1_REST_HTTP_Webservice
 {
@@ -50,6 +52,7 @@ namespace SWE1_REST_HTTP_Webservice
             if (!String.IsNullOrEmpty(content))
             {
                 Content = content;
+                HeaderPairs.RemoveAll(hp=>hp.HeaderKey=="Content-Length"||hp.HeaderKey=="Content-Type");
                 return AddHeader(new HttpHeaderPair(
                     "Content-Length",
                     System.Text.Encoding.ASCII.GetByteCount(Content).ToString()

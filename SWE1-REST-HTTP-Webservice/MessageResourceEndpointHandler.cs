@@ -73,7 +73,7 @@ namespace SWE1_REST_HTTP_Webservice
                 responseContext=routeAction.PathAction(requestContext);
             else
             {
-                responseContext = ResponseContext.BadRequestResponse();
+                responseContext = ResponseContext.BadRequestResponse().SetContent("No fitting endpoint could be found!", "text/plain");
             }
 
             return responseContext;
@@ -82,7 +82,7 @@ namespace SWE1_REST_HTTP_Webservice
         public ResponseContext ListHandler(RequestContext requestContext)
         {
             Console.WriteLine("Messages List - {0} {1}",requestContext.Type,requestContext.URL);
-            ResponseContext responseContext=ResponseContext.OKResponse().SetContent(String.Concat(_messages),"text/plain");
+            ResponseContext responseContext=ResponseContext.OKResponse().SetContent("Currently no messages exist!","text/plain").SetContent(String.Concat(_messages),"text/plain"); //default content is "Currently no messages exist!". if messages exist, default content is overwritten
             return responseContext;
         }
 
@@ -92,7 +92,7 @@ namespace SWE1_REST_HTTP_Webservice
             ResponseContext responseContext;
             if (String.IsNullOrEmpty(requestContext.Body))
             {
-                responseContext=ResponseContext.BadRequestResponse();
+                responseContext=ResponseContext.BadRequestResponse().SetContent("To create a message, some sort of text is needed!","text/plain");
             }
             else
             {
@@ -126,12 +126,12 @@ namespace SWE1_REST_HTTP_Webservice
                 }
                 else
                 {
-                    responseContext = ResponseContext.NotFoundResponse();
+                    responseContext = ResponseContext.NotFoundResponse().SetContent("The requested message was not found! Try again with another id!","text/plain");
                 }
             }
             else
             {
-                responseContext = ResponseContext.BadRequestResponse();
+                responseContext = ResponseContext.BadRequestResponse().SetContent("Id could not be converted!","text/plain");
             }
             return responseContext;
         }
@@ -152,12 +152,12 @@ namespace SWE1_REST_HTTP_Webservice
                 }
                 else
                 {
-                    responseContext = ResponseContext.NotFoundResponse();
+                    responseContext = ResponseContext.NotFoundResponse().SetContent("The requested message was not found! Try again with another id!","text/plain");
                 }
             }
             else
             {
-                responseContext = ResponseContext.BadRequestResponse();
+                responseContext = ResponseContext.BadRequestResponse().SetContent("Id could not be converted!","text/plain");
             }
 
             return responseContext;
@@ -179,12 +179,12 @@ namespace SWE1_REST_HTTP_Webservice
                 }
                 else
                 {
-                    responseContext = ResponseContext.NotFoundResponse();
+                    responseContext = ResponseContext.NotFoundResponse().SetContent("The requested message was not found! Try again with another id!","text/plain");
                 }
             }
             else
             {
-                responseContext = ResponseContext.BadRequestResponse();
+                responseContext = ResponseContext.BadRequestResponse().SetContent("Id could not be converted!","text/plain");
             }
 
             return responseContext;

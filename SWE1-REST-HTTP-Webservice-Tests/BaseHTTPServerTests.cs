@@ -27,7 +27,7 @@ namespace SWE1_REST_HTTP_Webservice_Tests
         public void HandleClientMock()
         {
             //arrange
-            var mockServer = new Mock<BaseHTTPServer>(8080);
+            var mockServer = new Mock<BaseHTTPServer>(8082);
             var clientMock = new Mock<ITcpClient>();
             //act
             mockServer.Object.HandleClient(clientMock.Object);

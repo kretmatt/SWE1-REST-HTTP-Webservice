@@ -62,6 +62,7 @@ namespace SWE1_REST_HTTP_Webservice
                 
                 bool requestHandled = false;
                 ResponseContext responseContext=ResponseContext.BadRequestResponse();
+                responseContext.SetContent("The requested resource was not found!","text/plain");
                 using (StreamReader streamReader = new StreamReader(networkStream))
                 {
                     requestContext = RequestContext.GetBaseRequest(streamReader.ReadLine());
